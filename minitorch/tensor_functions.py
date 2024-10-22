@@ -382,9 +382,8 @@ def zeros(shape: UserShape, backend: TensorBackend = SimpleBackend) -> Tensor:
         new tensor
 
     """
-    return minitorch.Tensor.make(
-        [0] * int(operators.prod(shape)), shape, backend=backend
-    )
+    return minitorch.Tensor.make([float(0)] * int(operators.prod(shape)), shape, backend=backend)
+
 
 
 def rand(
