@@ -38,7 +38,9 @@ class TensorOps:
         ...
 
     @staticmethod
-    def reduce(fn: Callable[[float, float], float], start: float = 0.0) -> Callable[[Tensor, int], Tensor]:
+    def reduce(
+        fn: Callable[[float, float], float], start: float = 0.0
+    ) -> Callable[[Tensor, int], Tensor]:
         """Apply a reduce function along a specific dimension of a tensor."""
         ...
 
@@ -181,7 +183,9 @@ class SimpleOps(TensorOps):
         return ret
 
     @staticmethod
-    def reduce(fn: Callable[[float, float], float], start: float = 0.0) -> Callable[["Tensor", int], "Tensor"]:
+    def reduce(
+        fn: Callable[[float, float], float], start: float = 0.0
+    ) -> Callable[["Tensor", int], "Tensor"]:
         """Higher-order tensor reduce function. ::
 
           fn_reduce = reduce(fn)
@@ -332,17 +336,17 @@ def tensor_zip(
         # TODO: Implement for Task 2.3.
         # raise NotImplementedError("Need to implement for Task 2.3")
         for out_index in range(len(out)):
-            out_pos = [0] * len(out_shape)
+            out_pos = np.zeros(len(out_shape), dtype=np.int32)
             a_pos = np.zeros(len(a_shape), dtype=np.int32)
             b_pos = np.zeros(len(b_shape), dtype=np.int32)
 
             to_index(out_index, out_shape, out_pos)
 
             for i in range(len(a_shape)):
-                a_pos[i] = out_pos[i] if a_shape[i] != 1 else 0
+                a_pos[i] = 0 if a_shape[i] == 1 else out_pos[i]
 
             for i in range(len(b_shape)):
-                b_pos[i] = out_pos[i] if b_shape[i] != 1 else 0
+                b_pos[i] = 0 if b_shape[i] == 1 else out_pos[i]
 
             a_index = index_to_position(a_pos, a_strides)
             b_index = index_to_position(b_pos, b_strides)
