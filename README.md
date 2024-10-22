@@ -54,6 +54,7 @@ This project contains the training results for four main datasets. For each data
 ### 4. **XOR Dataset (xor)**
    - **Training Log:** [xorLog.txt](results/xorLog.txt)
    - **Final Images:**
-     - ![xor](results/xor.png)
-     <!-- - ![xor1](results/xor1.png)
-     - ![xor2](results/xor2.png) -->
+     - ![xor](results/xor1.png)
+     - ![xor1](results/xor2.png)
+     - ![xor3](results/xor3.png)
+     - ![xor4](results/xor4.png)
