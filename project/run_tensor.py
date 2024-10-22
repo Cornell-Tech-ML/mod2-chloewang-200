@@ -24,7 +24,7 @@ class Network(minitorch.Module):
         h1 = self.layer1.forward(x).relu()
         h2 = self.layer2.forward(h1).relu()
         return self.layer3.forward(h2).sigmoid()
-        
+
 class Linear(minitorch.Module):
     def __init__(self, in_size, out_size):
         super().__init__()

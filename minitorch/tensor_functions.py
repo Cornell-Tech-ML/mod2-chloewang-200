@@ -198,6 +198,7 @@ class Exp(Function):
         (exp,) = ctx.saved_values
         return grad_output.f.mul_zip(exp, grad_output)
 
+
 class Sum(Function):
     """A class to perform a reduction operation that sums a tensor along a dimension."""
 
@@ -228,6 +229,7 @@ class All(Function):
             return a.f.mul_reduce(a, int(dim.item()))
         else:
             return a.f.mul_reduce(a.contiguous().view(int(operators.prod(a.shape))), 0)
+
 
 class LT(Function):
     """A function to perform a comparison operation that checks whether the first tensor
@@ -476,25 +478,25 @@ def grad_central_difference(
 ) -> float:
     """Compute the numerical gradient of a scalar function `f` using the central difference method.
 
-    This method estimates the partial derivative of `f` with respect to the argument `arg` at the 
-    specified index `ind`, based on small perturbations (`epsilon`) in both the positive and 
+    This method estimates the partial derivative of `f` with respect to the argument `arg` at the
+    specified index `ind`, based on small perturbations (`epsilon`) in both the positive and
     negative directions.
 
     Args:
     ----
-        f (Any): The function for which the gradient is to be computed. 
+        f (Any): The function for which the gradient is to be computed.
                  It should take multiple tensors as arguments and return a tensor output.
-        *vals (Tensor): The input tensors to the function `f`. The gradient will be computed with 
+        *vals (Tensor): The input tensors to the function `f`. The gradient will be computed with
                         respect to the tensor at the position specified by `arg`.
-        arg (int, optional): The index of the tensor in `vals` with respect to which the gradient 
+        arg (int, optional): The index of the tensor in `vals` with respect to which the gradient
                              will be computed. Default is 0.
-        epsilon (float, optional): The small perturbation added and subtracted to compute the 
+        epsilon (float, optional): The small perturbation added and subtracted to compute the
                                    central difference. Default is 1e-6.
         ind (UserIndex): The index within the tensor `vals[arg]` at which to compute the partial derivative.
 
     Returns:
     -------
-        float: The estimated partial derivative of `f` with respect to the tensor at `vals[arg]` 
+        float: The estimated partial derivative of `f` with respect to the tensor at `vals[arg]`
                at index `ind`, computed using the central difference method.
 
     """

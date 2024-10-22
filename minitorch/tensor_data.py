@@ -116,11 +116,14 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
 
     """
     result_shape = []
-    len1, len2 = len(shape1), len(shape2)
-    max_len = max(len1, len2)
 
-    shape1 = (1,) * (max_len - len1) + shape1
-    shape2 = (1,) * (max_len - len2) + shape2
+    shape1 = list(shape1)
+    shape2 = list(shape2)
+
+    while len(shape1) < len(shape2):
+        shape1.insert(0, 1)
+    while len(shape2) < len(shape1):
+        shape2.insert(0, 1)
 
     for dim1, dim2 in zip(shape1, shape2):
         if dim1 == dim2:
@@ -276,11 +279,11 @@ class TensorData:
         Args:
         ----
             None
-            
+
         Yields:
         ------
             Iterable[UserIndex]: An iterable of valid multidimensional indices.
-        
+
         """
         lshape: Shape = array(self.shape)
         out_index: Index = array(self.shape)
@@ -290,7 +293,7 @@ class TensorData:
 
     def sample(self) -> UserIndex:
         """Get a random valid index for the tensor.
-        
+
         Args:
         ----
             None
@@ -298,7 +301,7 @@ class TensorData:
         Returns:
         -------
             UserIndex: A valid random index in the tensor.
-        
+
         """
         return tuple((random.randint(0, s - 1) for s in self.shape))
 
@@ -312,7 +315,7 @@ class TensorData:
         Returns:
         -------
             float: The value at the specified index.
-        
+
         """
         x: float = self._storage[self.index(key)]
         return x
@@ -328,7 +331,7 @@ class TensorData:
         Returns:
         -------
             None
-        
+
         """
         self._storage[self.index(key)] = val
 
@@ -342,7 +345,7 @@ class TensorData:
         Returns:
         -------
             Tuple[Storage, Shape, Strides]: The tensor's storage, shape, and strides as a tuple.
-        
+
         """
         return (self._storage, self._shape, self._strides)
 
@@ -356,7 +359,7 @@ class TensorData:
         Returns:
         -------
             TensorData: A new `TensorData` with the dimensions permuted.
-        
+
         """
         assert list(sorted(order)) == list(
             range(len(self.shape))
@@ -376,7 +379,7 @@ class TensorData:
         Returns:
         -------
             str: The string representation of the tensor.
-        
+
         """
         s = ""
         for index in self.indices():

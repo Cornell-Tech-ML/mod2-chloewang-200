@@ -117,12 +117,17 @@ class Tensor:
             b._type_(self.backend)
             c = b
         return c
-    
+
     @property
-    def size(self) ->int:
+    def size(self) -> int:
         """Returns the size of the tensor"""
         return self._tensor.size
-    
+
+    @property
+    def dims(self) -> int:
+        """Returns the dimensionality of the tensor"""
+        return self._tensor.dims
+
     def item(self) -> float:
         """Convert a 1-element tensor to a float"""
         assert self.size == 1
@@ -202,6 +207,7 @@ class Tensor:
 
     def zeros(self, shape: Optional[UserShape] = None) -> Tensor:
         """Create a new tensor of zeros with the same shape as this tensor."""
+
         def zero(shape: UserShape) -> Tensor:
             return Tensor.make(
                 [0.0] * int(operators.prod(shape)), shape, backend=self.backend
@@ -311,11 +317,11 @@ class Tensor:
         """Returns the result of `self * other`."""
         other = self._ensure_tensor(other)
         return Mul.apply(self, other)
-    
+
     def __neg__(self) -> Tensor:
         """Returns the negation of the tensor."""
         return Neg.apply(self)
-    
+
     def __lt__(self, other: TensorLike) -> Tensor:
         """Returns 1 if this tensor is less than another tensor."""
         other = self._ensure_tensor(other)
@@ -326,7 +332,7 @@ class Tensor:
         other = self._ensure_tensor(other)
         return LT.apply(other, self)
 
-    def __eq__(self, other: TensorLike) -> Tensor: 
+    def __eq__(self, other: TensorLike) -> Tensor:
         """Return if this tensor is equal to another tensor."""
         other = self._ensure_tensor(other)
         return EQ.apply(self, other)
@@ -358,20 +364,20 @@ class Tensor:
     def sigmoid(self) -> Tensor:
         """Returns the sigmoid of tensor."""
         return Sigmoid.apply(self)
-    
+
     def sum(self, dim: Optional[int] = None) -> Tensor:
         """Compute the sum over dimension `dim`"""
         if dim is None:
             return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
-        dim = self._ensure_tensor(dim)
-        return Sum.apply(self, dim)
-    
-    def all(self, dim: Optional[int]=None) -> Tensor:
+        dim_tensor = self._ensure_tensor(dim)
+        return Sum.apply(self, dim_tensor)
+
+    def all(self, dim: Optional[int] = None) -> Tensor:
         """Returns 1 if all elements in the tensor are non-zero along a dimension."""
         if dim is None:
             return All.apply(self.view(self.size), self._ensure_tensor(0))
-        dim = self._ensure_tensor(dim)
-        return All.apply(self, dim)
+        dim_tensor = self._ensure_tensor(dim)
+        return All.apply(self, dim_tensor)
 
     def is_close(self, other: Tensor) -> Tensor:
         """Returns 1 if this tensor is close to another tensor."""
@@ -391,10 +397,11 @@ class Tensor:
         """Reshapes the tensor without changing its data."""
         assert self._tensor.is_contiguous(), "Tensor must be contiguous for view."
         size = operators.prod(shape)
-        assert size == operators.prod(self.shape), "New shape must match the total number of elements."
+        assert size == operators.prod(
+            self.shape
+        ), "New shape must match the total number of elements."
         return View.apply(self, tensor(list(shape)))
 
     def zero_grad_(self) -> None:
         """Sets the gradient to None."""
-        self.grad = None            
-
+        self.grad = None
