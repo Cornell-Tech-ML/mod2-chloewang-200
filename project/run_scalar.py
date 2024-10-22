@@ -11,13 +11,15 @@ import minitorch
 class Network(minitorch.Module):
     def __init__(self, hidden_layers):
         super().__init__()
-        raise NotImplementedError("Need to include this file from past assignment.")
+        self.layer1 = Linear(2, hidden_layers)
+        self.layer2 = Linear(hidden_layers, hidden_layers)
+        self.layer3 = Linear(hidden_layers, 1)
+        # raise NotImplementedError("Need to include this file from past assignment.")
 
     def forward(self, x):
-        middle = [h.relu() for h in self.layer1.forward(x)]
-        end = [h.relu() for h in self.layer2.forward(middle)]
-        return self.layer3.forward(end)[0].sigmoid()
-
+        middle = self.layer1(x).relu()
+        middle = self.layer2(middle).relu()
+        return self.layer3(middle).sigmoid()
 
 class Linear(minitorch.Module):
     def __init__(self, in_size, out_size):
@@ -40,7 +42,12 @@ class Linear(minitorch.Module):
             )
 
     def forward(self, inputs):
-        raise NotImplementedError("Need to include this file from past assignment.")
+        # raise NotImplementedError("Need to include this file from past assignment.")
+        y = [b.value for b in self.bias]
+        for i,x in enumerate(inputs):
+            for j in range(len(y)):
+                y[j] = y[j] + x * self.weights[i][j].value
+        return y
 
 
 def default_log_fn(epoch, total_loss, correct, losses):

@@ -1,3 +1,10 @@
+"""minitorch
+
+A lightweight deep learning library designed for educational purposes.
+This package provides various modules for tensor operations,
+autodifferentiation, neural networks, optimization, and testing.
+"""
+
 from .testing import MathTest, MathTestVariable  # type: ignore # noqa: F401,F403
 from .tensor_data import *  # noqa: F401,F403
 from .tensor import *  # noqa: F401,F403
