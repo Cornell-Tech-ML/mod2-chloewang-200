@@ -21,19 +21,33 @@ variable_count = 1
 
 
 class Variable(Protocol):
-    def accumulate_derivative(self, x: Any) -> None: ...
+    """Protocol that defines the interface for a differentiable variable in autodifferentiation."""
+
+    def accumulate_derivative(self, x: Any) -> None:
+        """Accumulate the derivative during backpropagation."""
+        ...
 
     @property
-    def unique_id(self) -> int: ...
+    def unique_id(self) -> int:
+        """Return a unique identifier for the variable."""
+        ...
 
-    def is_leaf(self) -> bool: ...
+    def is_leaf(self) -> bool:
+        """Check if the variable is a leaf node (created by the user)."""
+        ...
 
-    def is_constant(self) -> bool: ...
+    def is_constant(self) -> bool:
+        """Check if the variable is a constant (not involved in differentiation)."""
+        ...
 
     @property
-    def parents(self) -> Iterable["Variable"]: ...
+    def parents(self) -> Iterable["Variable"]:
+        """Return the parent variables that were used to create this variable."""
+        ...
 
-    def chain_rule(self, d_output: Any) -> Iterable[Tuple["Variable", Any]]: ...
+    def chain_rule(self, d_output: Any) -> Iterable[Tuple["Variable", Any]]:
+        """Apply the chain rule to propagate derivatives backward."""
+        ...
 
 
 def topological_sort(variable: Variable) -> Iterable[Variable]:
@@ -88,4 +102,5 @@ class Context:
 
     @property
     def saved_tensors(self) -> Tuple[Any, ...]:
+        """Return the saved tensors."""
         return self.saved_values
